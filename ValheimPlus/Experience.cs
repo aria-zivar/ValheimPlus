@@ -37,15 +37,30 @@ namespace ValheimPlus
 
             private static void Postfix(Skills __instance, Skills.SkillType skillType, float factor = 1f)
             {
-                if (Configuration.Current.Player.IsEnabled && Configuration.Current.Player.ExperienceGainedNotifications)
+                Skills.Skill skill = __instance.GetSkill(skillType);
+                String skill_name = skill.m_info.m_skill.ToString();
+
+                if (skill_name.ToString() == "900" || skill_name.ToString() == "skill_900")
                 {
-                    Skills.Skill skill = __instance.GetSkill(skillType);
-                    float percent = skill.m_accumulator / (skill.GetNextLevelRequirement() / 100);
-                    __instance.m_player.Message(MessageHud.MessageType.TopLeft, skill.m_info.m_skill + " [" + Helper.tFloat(skill.m_accumulator, 2) + "/" + Helper.tFloat(skill.GetNextLevelRequirement(), 2) + "] (" + Helper.tFloat(percent, 0) + "%)", 0, skill.m_info.m_icon);
+                    skill_name = "Athletics";
+                }
+
+                var display_message = skill_name != "Athletics" && skill_name != "Run" && skill_name != "Swim" && skill_name != "Jump" && skill_name != "Sneak";
+
+                if (display_message)
+                {
+                    if (Configuration.Current.Player.IsEnabled && Configuration.Current.Player.ExperienceGainedNotifications)
+                    {
+                        float percent = skill.m_accumulator / (skill.GetNextLevelRequirement() / 100);
+                        int level = (int)skill.m_level;
+                        //__instance.m_player.Message(MessageHud.MessageType.TopLeft, skill.m_info.m_skill + " [" + Helper.tFloat(skill.m_accumulator, 2) + "/" + Helper.tFloat(skill.GetNextLevelRequirement(), 2) + "] (" + Helper.tFloat(percent, 0) + "%)", 0, skill.m_info.m_icon);
+
+
+
+                        __instance.m_player.Message(MessageHud.MessageType.TopLeft, skill_name + " " + level.ToString() + " (" + Helper.tFloat(percent, 0) + "%)", 0, skill.m_info.m_icon);
+                    }
                 }
             }
-
         }
-        
     }
 }
